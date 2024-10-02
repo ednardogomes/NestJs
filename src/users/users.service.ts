@@ -15,11 +15,11 @@ export class UsersService {
   ) {}
 
   async create(createUser: CreateUserDto): Promise<string> {
-    const userAlreadyExists = this.userRepository.findOne({
+    const userAlreadyExists = await this.userRepository.findOne({
       where: { email: createUser.email },
     });
 
-    if (!userAlreadyExists) {
+    if (userAlreadyExists) {
       throw new HttpException(`Usuário já cadastrado.!`, HttpStatus.CONFLICT);
     }
 

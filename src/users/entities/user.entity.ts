@@ -3,10 +3,10 @@
 import { ObjectId } from 'mongodb';
 import { Column, Entity, ObjectIdColumn } from 'typeorm';
 
-@Entity()
+@Entity('Users')
 export class UserEntity {
   @ObjectIdColumn()
-  _id: ObjectId
+  _id: ObjectId;
 
   @Column()
   name: string;
@@ -15,9 +15,8 @@ export class UserEntity {
   surname: string;
 
   @Column()
-  email: string
+  email: string;
 
   @Column()
   password: string;
-
 }
