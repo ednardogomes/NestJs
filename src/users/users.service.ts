@@ -1,11 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { hashSync as bcryptHashSync } from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -38,8 +45,22 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<UserEntity> {
+    let clientID: ObjectId;
+
+    try {
+      clientID = new ObjectId(id);
+    } catch (error) {
+      throw new BadRequestException(`ID inválido${error.message}`);
+    }
+    const foundUser = await this.userRepository.findOne({
+      where: { _id: clientID },
+    });
+    if (!foundUser) {
+      throw new NotFoundException(`Usuário não encontrado`);
+    }
+
+    return foundUser;
   }
 
   async update(id: string, updateUser: UpdateUserDto) {
