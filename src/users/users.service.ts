@@ -85,7 +85,7 @@ export class UsersService {
         clientID,
         updateUser,
       );
-      
+
       if (updatedUser.affected > 0) {
         return 'Dados atualizado com sucesso';
       }
@@ -95,6 +95,19 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} user`;
+    let clientID: ObjectId;
+    try {
+      clientID = new ObjectId(id);
+      const foundUser = await this.userRepository.findOne({
+        where: { _id: clientID },
+      });
+      if (!foundUser) {
+        throw new NotFoundException('Usuário não encontrado');
+      }
+      await this.userRepository.delete(clientID);
+      return `Usuário deletado com sucesso`;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
