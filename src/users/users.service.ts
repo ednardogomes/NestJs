@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -27,18 +26,24 @@ export class UsersService {
     });
 
     if (userAlreadyExists) {
-      throw new HttpException(`Usuário já cadastrado.!`, HttpStatus.CONFLICT);
+      throw new ConflictException(`Usuário já cadastrado.!`);
     }
 
-    const newUserDb = new UserEntity();
-    newUserDb.name = createUser.name;
-    newUserDb.surname = createUser.surname;
-    newUserDb.email = createUser.email;
-    newUserDb.password = bcryptHashSync(createUser.password, 10);
+    try {
+      const newUserDb = new UserEntity();
+      newUserDb.name = createUser.name;
+      newUserDb.surname = createUser.surname;
+      newUserDb.email = createUser.email;
+      newUserDb.password = bcryptHashSync(createUser.password, 10);
 
-    await this.userRepository.save(newUserDb);
+      await this.userRepository.save(newUserDb);
 
-    return 'Usuário cadastrado com sucesso.!';
+      return 'Usuário cadastrado com sucesso.!';
+    } catch (error) {
+      throw new BadRequestException(
+        `Erro ao cadastrar usuário${error.message}`,
+      );
+    }
   }
 
   async findAll() {
