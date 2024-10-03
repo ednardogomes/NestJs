@@ -68,8 +68,30 @@ export class UsersService {
     return foundUser;
   }
 
-  async update(id: string, updateUser: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUser: UpdateUserDto): Promise<string> {
+    let clientID: ObjectId;
+    try {
+      clientID = new ObjectId(id);
+      const foundUser = await this.userRepository.findOne({
+        where: { _id: clientID },
+      });
+
+      if (!foundUser) {
+        throw new NotFoundException(`Usuário não encontrado`);
+      }
+
+      updateUser.password = bcryptHashSync(foundUser.password, 10);
+      const updatedUser = await this.userRepository.update(
+        clientID,
+        updateUser,
+      );
+      
+      if (updatedUser.affected > 0) {
+        return 'Dados atualizado com sucesso';
+      }
+    } catch (error) {
+      throw new BadRequestException(`${error.message}`);
+    }
   }
 
   async remove(id: string) {
