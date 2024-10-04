@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -66,6 +67,22 @@ export class UsersService {
     }
 
     return foundUser;
+  }
+
+  async findUserByEmail(email: string): Promise<UserEntity | null> {
+    try {
+      const userFoundEmail = await this.userRepository.findOne({
+        where: { email: email },
+      });
+
+      if (userFoundEmail) {
+        delete userFoundEmail.name;
+        delete userFoundEmail.surname;
+        return { ...userFoundEmail };
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async update(id: string, updateUser: UpdateUserDto): Promise<string> {
