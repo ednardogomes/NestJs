@@ -1,1 +1,2 @@
-export class Task {}
+/* eslint-disable prettier/prettier */
+export class TaskEntity {}

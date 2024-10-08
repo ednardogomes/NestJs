@@ -1,1 +1,4 @@
-export class CreateTaskDto {}
+/* eslint-disable prettier/prettier */
+export class CreateTaskDto {
+  
+}
