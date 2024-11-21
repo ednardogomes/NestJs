@@ -37,7 +37,7 @@ export class AuthService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    if (foundUser && !bcryptCompareSync(password, foundUser.password)) {
+    if (!foundUser && !bcryptCompareSync(password, foundUser.password)) {
       throw new UnauthorizedException('Credenciais incorretas');
     }
 

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskService } from './task.service';
+import { TaskService } from './tasks.service';
 
 describe('TaskService', () => {
   let service: TaskService;

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskController } from './task.controller';
-import { TaskService } from './task.service';
+import { TaskController } from './tasks.controller';
+import { TaskService } from './tasks.service';
 
 describe('TaskController', () => {
   let controller: TaskController;
